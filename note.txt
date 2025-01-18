@@ -1,0 +1,2 @@
+$message = "You have been requested to write a recommendation letter. Click the link below to respond:\n\n";
+$message .= "http://your-domain.com/recommendation.php?token=$token\n\n";
