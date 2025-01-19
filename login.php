@@ -1,20 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
-</head>
-<body>
+<?php include 'header.php'; // Include the header ?>
+
+<div class="login-container">
     <h2>Login</h2>
     <form action="process_login.php" method="POST">
-        <label for="login">Username or Email:</label>
-        <input type="text" id="login" name="login" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Login</button>
+        <div class="mb-3">
+            <label for="login" class="form-label">Username or Email:</label>
+            <input type="text" id="login" name="login" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
-</body>
-</html>
+
+    <!-- Link to Registration page -->
+    <div class="mt-3 text-center">
+        <p>Don't have an account? <a href="register.php">Register here</a></p>
+    </div>
+</div>
+
+<?php include 'footer.php'; // Include the footer ?>

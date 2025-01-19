@@ -35,17 +35,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submission Details</title>
-</head>
-<body>
-    <h2>Submission Details</h2>
-    <a href="admin_dashboard.php">Back to Dashboard</a>
-    <table border="1">
+<?php include 'header.php'; // Include the header ?>
+
+<div class="container">
+    <h2 class="mt-4">Submission Details</h2>
+    <a href="admin_dashboard.php" class="btn btn-secondary mb-3">Back to Dashboard</a>
+    <table class="table table-bordered">
         <tr>
             <th>Submission ID</th>
             <td><?= htmlspecialchars($submission['id']) ?></td>
@@ -85,5 +80,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             </td>
         </tr>
     </table>
-</body>
-</html>
+</div>
+
+<?php include 'footer.php'; // Include the footer ?>

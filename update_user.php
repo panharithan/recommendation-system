@@ -45,30 +45,33 @@ if (isset($_GET['id'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User</title>
-</head>
-<body>
+<?php include 'header.php'; // Include the header ?>
+
+<div class="container mt-4">
     <h2>Update User</h2>
     <form method="POST">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']) ?>" required><br><br>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']) ?>" class="form-control" required>
+        </div>
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required><br><br>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" class="form-control" required>
+        </div>
 
-        <label for="role">Role:</label><br>
-        <select id="role" name="role" required>
-            <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
-            <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
-        </select><br><br>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role:</label>
+            <select id="role" name="role" class="form-select" required>
+                <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
+                <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+            </select>
+        </div>
 
-        <button type="submit">Update</button>
+        <button type="submit" class="btn btn-primary">Update</button>
     </form>
-    <a href="admin_dashboard.php">Back to Dashboard</a>
-</body>
-</html>
+
+    <a href="admin_dashboard.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+
+<?php include 'footer.php'; // Include the footer ?>

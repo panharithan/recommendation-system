@@ -19,75 +19,89 @@ $submissionQuery = "SELECT rr.id, u.username, rr.email, rr.status, rs.file_path,
 $submissions = $conn->query($submissionQuery);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-</head>
-<body>
-    <h2>Welcome, Admin</h2>
-    <a href="logout.php">Logout</a>
-    
-    <h3>Registered Users</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Registered At</th>
-            <th>Actions</th>
-        </tr>
-        <?php while ($row = $users->fetch_assoc()): ?>
-        <tr>
-            <td><?= $row['id'] ?></td>
-            <td><?= htmlspecialchars($row['username']) ?></td>
-            <td><?= htmlspecialchars($row['email']) ?></td>
-            <td><?= $row['role'] ?></td>
-            <td><?= $row['created_at'] ?></td>
-            <td>
-                <a href="update_user.php?id=<?= $row['id'] ?>">Edit</a> | 
-                <a href="delete_user.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+<?php
+$title = "Admin Dashboard"; // Dynamic title for the page
+include 'header.php'; // Include the header
+?>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">Welcome, Admin</h2>
+            <a href="logout.php" class="btn btn-danger btn-sm">Logout</a>
+    </div>
 
-    <h3>Recommendation Submissions</h3>
-    <table border="1">
-        <tr>
-            <th>Submission ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>File</th>
-            <th>Submitted At</th>
-            <th>Actions</th>
-        </tr>
-        <?php while ($row = $submissions->fetch_assoc()): ?>
-        <tr>
-            <td><?= $row['id'] ?></td>
-            <td><?= htmlspecialchars($row['username']) ?></td>
-            <td><?= htmlspecialchars($row['email']) ?></td>
-            <td><?= htmlspecialchars($row['status']) ?></td>
-            <td>
-                <?php if ($row['file_path']): ?>
-                    <a href="<?= $row['file_path'] ?>" download>Download</a>
-                <?php else: ?>
-                    N/A
-                <?php endif; ?>
-            </td>
-            <td><?= $row['submitted_at'] ?: 'N/A' ?></td>
-            <td>
-                <a href="view_submission.php?id=<?= $row['id'] ?>">View Details</a>
-            </td>
-            <td>
-                <a href="delete_submission.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this submission?')">Delete</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
-</body>
-</html>
+        <!-- Registered Users -->
+        <h3 class="text-secondary">Registered Users</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Registered At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $users->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= htmlspecialchars($row['username']) ?></td>
+                        <td><?= htmlspecialchars($row['email']) ?></td>
+                        <td><?= $row['role'] ?></td>
+                        <td><?= $row['created_at'] ?></td>
+                        <td>
+                            <a href="update_user.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="delete_user.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recommendation Submissions -->
+        <h3 class="text-secondary mt-5">Recommendation Submissions</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Submission ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>File</th>
+                        <th>Submitted At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $submissions->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= htmlspecialchars($row['username']) ?></td>
+                        <td><?= htmlspecialchars($row['email']) ?></td>
+                        <td><?= htmlspecialchars($row['status']) ?></td>
+                        <td>
+                            <?php if ($row['file_path']): ?>
+                                <a href="<?= $row['file_path'] ?>" download class="btn btn-sm btn-primary">Download</a>
+                            <?php else: ?>
+                                N/A
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $row['submitted_at'] ?: 'N/A' ?></td>
+                        <td>
+                            <a href="view_submission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">View Details</a>
+                            <a href="delete_submission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this submission?')">Delete</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<?php
+include 'footer.php'; // Include the footer
+?>

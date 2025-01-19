@@ -109,34 +109,34 @@ if (isset($_GET['token'])) {
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recommendation Submission</title>
-</head>
-<body>
-    <?php if ($message): ?>
-        <p><?= htmlspecialchars($message) ?></p>
-    <?php endif; ?>
+<?php include 'header.php'; // Include the header ?>
 
-    <?php if ($formVisible): ?>
-        <h2>Submit Your Recommendation</h2>
-        <form action="" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
-            
-            <label for="relationship">Relationship with Student:</label><br>
-            <input type="text" id="relationship" name="relationship" required><br><br>
-            
-            <label for="comments">Comments:</label><br>
-            <textarea id="comments" name="comments" rows="5" cols="40" required></textarea><br><br>
-            
-            <label for="recommendation_file">Upload Recommendation Letter (PDF, DOC, DOCX only, Max: 2MB):</label><br>
-            <input type="file" id="recommendation_file" name="recommendation_file" required><br><br>
-            
-            <button type="submit">Submit Recommendation</button>
-        </form>
-    <?php endif; ?>
-</body>
-</html>
+<?php if ($message): ?>
+    <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+<?php endif; ?>
+
+<?php if ($formVisible): ?>
+    <h2>Submit Your Recommendation</h2>
+    <form action="" method="POST" enctype="multipart/form-data" class="mt-3">
+        <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
+        
+        <div class="mb-3">
+            <label for="relationship" class="form-label">Relationship with Student:</label>
+            <input type="text" id="relationship" name="relationship" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="comments" class="form-label">Comments:</label>
+            <textarea id="comments" name="comments" class="form-control" rows="5" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="recommendation_file" class="form-label">Upload Recommendation Letter (PDF, DOC, DOCX only, Max: 2MB):</label>
+            <input type="file" id="recommendation_file" name="recommendation_file" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit Recommendation</button>
+    </form>
+<?php endif; ?>
+
+<?php include 'footer.php'; // Include the footer ?>
