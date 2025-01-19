@@ -59,12 +59,12 @@ $total_records = $totalRow['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Fetch the recommendation requests with pagination
-$requestQuery = $conn->prepare("SELECT email, status, created_at FROM recommendation_requests WHERE user_id = ? LIMIT ?, ?");
+$requestQuery = $conn->prepare("SELECT id, email, status, created_at FROM recommendation_requests WHERE user_id = ? LIMIT ?, ?");
 $requestQuery->bind_param("iii", $user['id'], $offset, $records_per_page);
 $requestQuery->execute();
 $requests = $requestQuery->get_result();
 
-$title = "Manage Invitations";
+$title = "User Dashboard";
 include 'header.php'; // Include the header
 ?>
 
@@ -82,12 +82,23 @@ include 'header.php'; // Include the header
 </form>
 
 <h3>Your Recommendation Requests</h3>
+<?php if (isset($_GET['message'])): ?>
+    <div class="alert alert-success">
+        <?= htmlspecialchars($_GET['message']); ?>
+    </div>
+<?php elseif (isset($_GET['error'])): ?>
+    <div class="alert alert-danger">
+        <?= htmlspecialchars($_GET['error']); ?>
+    </div>
+<?php endif; ?>
+
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Email</th>
             <th>Status</th>
             <th>Requested At</th>
+            <th>Action</th> <!-- Column for Resend Button -->
         </tr>
     </thead>
     <tbody>
@@ -96,6 +107,12 @@ include 'header.php'; // Include the header
             <td><?= htmlspecialchars($row['email']); ?></td>
             <td><?= htmlspecialchars($row['status']); ?></td>
             <td><?= htmlspecialchars($row['created_at']); ?></td>
+            <td>
+                <?php if ($row['status'] === 'pending'): ?>
+                    <!-- Resend Button -->
+                    <a href="resend_submission.php?id=<?= $row['id']; ?>" class="btn btn-warning btn-sm">Resend</a>
+                <?php endif; ?>
+            </td>
         </tr>
         <?php endwhile; ?>
     </tbody>
@@ -120,4 +137,4 @@ include 'header.php'; // Include the header
     </ul>
 </nav>
 
-<?php include 'footer.php'; ?>
+<?php include 'footer.php'; ?> <!-- Include the footer -->

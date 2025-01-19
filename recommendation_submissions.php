@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'user')) {
     header('Location: login.php');
     exit();
 }
@@ -33,9 +33,27 @@ include 'header.php'; // Include the header
 ?>
 
 <div class="container mt-4">
+    <!-- Display success or error message -->
+    <?php if (isset($_GET['message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_GET['message']) ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php elseif (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_GET['error']) ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-primary">Recommendation Submissions</h2>
-        <a href="admin_dashboard.php" class="btn btn-secondary btn-sm">Back to Dashboard</a>
+        <!-- Dynamically change the link based on user role -->
+        <a href="<?= $_SESSION['role'] === 'admin' ? 'admin_dashboard.php' : 'user_dashboard.php'; ?>" class="btn btn-secondary btn-sm">Back to Dashboard</a>
     </div>
 
     <div class="table-responsive">
@@ -69,6 +87,9 @@ include 'header.php'; // Include the header
                     <td>
                         <a href="view_submission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">View Details</a>
                         <a href="delete_submission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this submission?')">Delete</a>
+                        <?php if ($row['status'] === 'pending'): ?>
+                            <a href="resend_submission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Resend</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endwhile; ?>
