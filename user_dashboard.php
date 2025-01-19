@@ -5,13 +5,25 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+require 'send_email.php'; // Include the email-sending script
+
 $conn = new mysqli('localhost', 'root', '', 'user_management');
+
+// Define the number of records per page
+$records_per_page = 5;
+
+// Determine the current page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max($page, 1); // Ensure the page is at least 1
+
+// Calculate the offset for the SQL query
+$offset = ($page - 1) * $records_per_page;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $token = bin2hex(random_bytes(16)); // Generate unique token
 
-    $userQuery = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    $userQuery = $conn->prepare("SELECT id, username, email FROM users WHERE username = ?");
     $userQuery->bind_param("s", $_SESSION['username']);
     $userQuery->execute();
     $userResult = $userQuery->get_result();
@@ -21,15 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $insertQuery->bind_param("iss", $user['id'], $email, $token);
 
     if ($insertQuery->execute()) {
-        $subject = "Recommendation Request";
-        $message = "Click the link to respond:\n\nhttp://example.com/recommendation.php?token=$token\n\n";
-        $headers = "From: noreply@example.com";
-
-        if (mail($email, $subject, $message, $headers)) {
-            $feedback = "Invitation sent successfully!";
-        } else {
-            $feedback = "Failed to send email.";
-        }
+        // Call the function from send_email.php
+        $feedback = sendRecommendationEmail($email, $token, $user['username'], $user['email']);
     } else {
         $feedback = "Error: Could not save the request.";
     }
@@ -42,14 +47,23 @@ $userQuery->execute();
 $userResult = $userQuery->get_result();
 $user = $userResult->fetch_assoc();
 
-// Fetch recommendation requests for the logged-in user
-$requestQuery = $conn->prepare("SELECT email, status, created_at FROM recommendation_requests WHERE user_id = ?");
-$requestQuery->bind_param("i", $user['id']);
+// Fetch the total number of recommendation requests
+$totalQuery = $conn->prepare("SELECT COUNT(*) AS total FROM recommendation_requests WHERE user_id = ?");
+$totalQuery->bind_param("i", $user['id']);
+$totalQuery->execute();
+$totalResult = $totalQuery->get_result();
+$totalRow = $totalResult->fetch_assoc();
+$total_records = $totalRow['total'];
+
+// Calculate the total number of pages
+$total_pages = ceil($total_records / $records_per_page);
+
+// Fetch the recommendation requests with pagination
+$requestQuery = $conn->prepare("SELECT email, status, created_at FROM recommendation_requests WHERE user_id = ? LIMIT ?, ?");
+$requestQuery->bind_param("iii", $user['id'], $offset, $records_per_page);
 $requestQuery->execute();
 $requests = $requestQuery->get_result();
-?>
 
-<?php
 $title = "Manage Invitations";
 include 'header.php'; // Include the header
 ?>
@@ -86,5 +100,24 @@ include 'header.php'; // Include the header
         <?php endwhile; ?>
     </tbody>
 </table>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        <?php if ($page > 1): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page - 1; ?>">Previous</a></li>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <li class="page-item"><a class="page-link" href="?page=<?= $page + 1; ?>">Next</a></li>
+        <?php endif; ?>
+    </ul>
+</nav>
 
 <?php include 'footer.php'; ?>

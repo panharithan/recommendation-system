@@ -4,3 +4,9 @@ $message .= "http://your-domain.com/recommendation.php?token=$token\n\n";
 Create a directory named uploads/ in the root of your project to store uploaded files. Ensure it is writable by PHP.
 mkdir uploads
 chmod 777 uploads
+
+
+Mail
+composer require phpmailer/phpmailer
+
+zhlh qnnp mgku grby
