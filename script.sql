@@ -25,3 +25,13 @@ CREATE TABLE recommendation_requests (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE recommendation_submissions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    relationship VARCHAR(255) NOT NULL,
+    comments TEXT NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES recommendation_requests(id) ON DELETE CASCADE
+);

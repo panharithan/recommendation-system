@@ -81,6 +81,9 @@ $submissions = $conn->query($submissionQuery);
             </td>
             <td><?= $row['submitted_at'] ?: 'N/A' ?></td>
             <td>
+                <a href="view_submission.php?id=<?= $row['id'] ?>">View Details</a>
+            </td>
+            <td>
                 <a href="delete_submission.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this submission?')">Delete</a>
             </td>
         </tr>
