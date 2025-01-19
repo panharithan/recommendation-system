@@ -62,6 +62,15 @@ $requests = $requestQuery->get_result();
     <h2>Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</h2>
     <a href="logout.php">Logout</a>
 
+    <!-- User Quick Links -->
+    <h3>User Quick Links</h3>
+    <nav>
+        <a href="profile.php">View/Update Profile</a> |
+        <a href="reference_status.php">Check Reference Status</a> |
+        <a href="manage_invitations.php">Manage Invitations</a>
+    </nav>
+
+    <!-- Request a Recommendation -->
     <h3>Request a Recommendation Letter</h3>
     <?php if (isset($feedback)) echo "<p>$feedback</p>"; ?>
     <form action="" method="POST">
@@ -70,6 +79,7 @@ $requests = $requestQuery->get_result();
         <button type="submit">Send Invitation</button>
     </form>
 
+    <!-- Recommendation Requests -->
     <h3>Your Recommendation Requests</h3>
     <table border="1">
         <tr>
