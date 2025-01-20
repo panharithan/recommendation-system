@@ -78,7 +78,8 @@ include 'header.php'; // Include the header
                     <td><?= htmlspecialchars($row['status']) ?></td>
                     <td>
                         <?php if ($row['file_path']): ?>
-                            <a href="<?= $row['file_path'] ?>" download class="btn btn-sm btn-primary">Download</a>
+                            <!-- Updated file download link to point to download.php -->
+                            <a href="download.php?file=<?= urlencode(basename($row['file_path'])) ?>" class="btn btn-sm btn-primary">Download</a>
                         <?php else: ?>
                             N/A
                         <?php endif; ?>

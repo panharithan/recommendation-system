@@ -17,6 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $comments = trim($_POST['comments']);
     $file = $_FILES['recommendation_file'];
 
+    // Input validation for character limits
+    if (strlen($relationship) > 100) {
+        $message = "Relationship description must be under 100 characters.";
+        $formVisible = false;
+    } elseif (strlen($comments) > 1000) {
+        $message = "Comments must be under 1000 characters.";
+        $formVisible = false;
+    }
+
+    // Sanitize input
+    $relationship = htmlspecialchars($relationship, ENT_QUOTES, 'UTF-8');
+    $comments = htmlspecialchars($comments, ENT_QUOTES, 'UTF-8');
+
     // Validate token and check status
     $query = "SELECT id, status FROM recommendation_requests WHERE token = ?";
     $stmt = $conn->prepare($query);
@@ -32,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Validate file upload
             $allowedFileTypes = ['pdf', 'doc', 'docx'];
-            $maxFileSize = 2 * 1024 * 1024; // 2 MB
+            $maxFileSize = 20 * 1024 * 1024; // 20 MB
 
             $fileName = $file['name'];
             $fileTmpName = $file['tmp_name'];
@@ -69,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "File upload failed. Please try again.";
                 }
             } else {
-                $message = "Invalid file. Please upload a valid PDF, DOC, or DOCX file under 2 MB.";
+                $message = "Invalid file. Please upload a valid PDF, DOC, or DOCX file under 20 MB.";
             }
         }
     } else {
@@ -122,12 +135,14 @@ $conn->close();
         
         <div class="mb-3">
             <label for="relationship" class="form-label">Relationship with Student:</label>
-            <input type="text" id="relationship" name="relationship" class="form-control" required>
+            <input type="text" id="relationship" name="relationship" class="form-control" required maxlength="100" value="<?= htmlspecialchars($relationship) ?>">
+            <!-- Character limit of 100 for relationship input -->
         </div>
         
         <div class="mb-3">
             <label for="comments" class="form-label">Comments:</label>
-            <textarea id="comments" name="comments" class="form-control" rows="5" required></textarea>
+            <textarea id="comments" name="comments" class="form-control" rows="5" required maxlength="1000"><?= htmlspecialchars($comments) ?></textarea>
+            <!-- Character limit of 1000 for comments -->
         </div>
         
         <div class="mb-3">

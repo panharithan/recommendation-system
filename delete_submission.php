@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 // Retrieve the file path for deletion
 $submissionId = $_GET['id'];
-$fileQuery = "SELECT file_path FROM recommendation_submissions WHERE id = ?";
+$fileQuery = "SELECT file_path FROM recommendation_submissions WHERE request_id = ?";
 $stmt = $conn->prepare($fileQuery);
 $stmt->bind_param("i", $submissionId);
 $stmt->execute();
@@ -37,9 +37,22 @@ if ($result->num_rows === 1) {
     }
 
     // Delete the submission record from the database
-    $deleteQuery = "DELETE FROM recommendation_submissions WHERE id = ?";
+    $deleteQuery = "DELETE FROM recommendation_submissions WHERE request_id = ?";
     $deleteStmt = $conn->prepare($deleteQuery);
     $deleteStmt->bind_param("i", $submissionId);
+
+    // Delete the submission record from the database
+    $deleteQuery = "DELETE FROM recommendation_requests WHERE id = ?";
+    $deleteStmt = $conn->prepare($deleteQuery);
+    $deleteStmt->bind_param("i", $submissionId);
+
+    // Delete the associated request record from recommendation_requests
+    // This assumes that the `recommendation_requests` table has a foreign key to `recommendation_submissions`
+    $deleteRequestQuery = "DELETE FROM recommendation_requests WHERE id = ?";
+    $deleteRequestStmt = $conn->prepare($deleteRequestQuery);
+    $deleteRequestStmt->bind_param("i", $submissionId);
+    $deleteRequestStmt->execute();
+    $deleteRequestStmt->close();
 
     if ($deleteStmt->execute()) {
         header('Location: admin_dashboard.php?message=Submission+deleted+successfully');

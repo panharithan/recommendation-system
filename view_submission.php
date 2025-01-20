@@ -73,7 +73,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <th>File</th>
             <td>
                 <?php if ($submission['file_path']): ?>
-                    <a href="<?= $submission['file_path'] ?>" download>Download File</a>
+                    <!-- Update the link to use the download.php script -->
+                    <a href="download.php?file=<?= urlencode(basename($submission['file_path'])) ?>">Download File</a>
                 <?php else: ?>
                     N/A
                 <?php endif; ?>

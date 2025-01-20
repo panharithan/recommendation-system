@@ -14,7 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
-    // Check for username or email
+    // Input validation
+    if (empty($login) || empty($password)) {
+        header('Location: login.php?error=Please fill in all fields');
+        exit();
+    }
+
+    // Sanitize input
+    $login = htmlspecialchars($login, ENT_QUOTES, 'UTF-8');
+
+    // Check for username or email using prepared statements
     $query = "SELECT * FROM users WHERE username = ? OR email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $login, $login);
@@ -59,19 +68,21 @@ $conn->close();
     <?php
     // Display error message if it exists
     if (isset($_GET['error'])) {
-        echo "<div class='alert alert-danger'>{$_GET['error']}</div>";
+        echo "<div class='alert alert-danger'>" . htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') . "</div>";
     }
     ?>
     
     <form action="login.php" method="POST">
         <div class="mb-3">
             <label for="login" class="form-label">Username or Email:</label>
-            <input type="text" id="login" name="login" class="form-control" required>
+            <input type="text" id="login" name="login" class="form-control" required maxlength="50">
+            <!-- Set the maximum length of the username/email to 50 characters -->
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
+            <input type="password" id="password" name="password" class="form-control" required maxlength="20">
+            <!-- Set the maximum length of the password to 20 characters -->
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Login</button>
