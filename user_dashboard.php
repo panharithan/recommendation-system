@@ -9,6 +9,11 @@ require 'send_email.php'; // Include the email-sending script
 
 $conn = new mysqli('localhost', 'root', '', 'user_management');
 
+// Check for a successful connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 // Define the number of records per page
 $records_per_page = 5;
 
@@ -20,23 +25,37 @@ $page = max($page, 1); // Ensure the page is at least 1
 $offset = ($page - 1) * $records_per_page;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
-    $token = bin2hex(random_bytes(16)); // Generate unique token
-
-    $userQuery = $conn->prepare("SELECT id, username, email FROM users WHERE username = ?");
-    $userQuery->bind_param("s", $_SESSION['username']);
-    $userQuery->execute();
-    $userResult = $userQuery->get_result();
-    $user = $userResult->fetch_assoc();
-
-    $insertQuery = $conn->prepare("INSERT INTO recommendation_requests (user_id, email, token) VALUES (?, ?, ?)");
-    $insertQuery->bind_param("iss", $user['id'], $email, $token);
-
-    if ($insertQuery->execute()) {
-        // Call the function from send_email.php
-        $feedback = sendRecommendationEmail($email, $token, $user['username'], $user['email']);
+    // Validate and sanitize email input
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    
+    // Ensure the email is in a valid format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $feedback = "Invalid email format.";
     } else {
-        $feedback = "Error: Could not save the request.";
+        // Generate a unique token
+        $token = bin2hex(random_bytes(16)); // Generate unique token
+
+        // Get user data securely using prepared statements
+        $userQuery = $conn->prepare("SELECT id, username, email FROM users WHERE username = ?");
+        $userQuery->bind_param("s", $_SESSION['username']);
+        $userQuery->execute();
+        $userResult = $userQuery->get_result();
+        $user = $userResult->fetch_assoc();
+
+        // Insert the recommendation request using prepared statements
+        $insertQuery = $conn->prepare("INSERT INTO recommendation_requests (user_id, email, token) VALUES (?, ?, ?)");
+        $insertQuery->bind_param("iss", $user['id'], $email, $token);
+
+        if ($insertQuery->execute()) {
+            // Call the function from send_email.php
+            $feedback = sendRecommendationEmail($email, $token, $user['username'], $user['email']);
+
+            // Redirect to refresh the page and clear the form data
+            header("Location: ".$_SERVER['PHP_SELF']);
+            exit();
+        } else {
+            $feedback = "Error: Could not save the request.";
+        }
     }
 }
 
@@ -80,6 +99,9 @@ include 'header.php'; // Include the header
     </div>
     <button type="submit" class="btn btn-primary">Send Invitation</button>
 </form>
+
+<!-- Refresh Button -->
+<button onclick="window.location.reload();" class="btn btn-secondary">Refresh</button>
 
 <h3>Your Recommendation Requests</h3>
 <?php if (isset($_GET['message'])): ?>

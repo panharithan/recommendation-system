@@ -7,6 +7,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 $conn = new mysqli('localhost', 'root', '', 'user_management');
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 // Pagination settings
 $limit = 5;  // Number of records per page
 
@@ -14,25 +19,31 @@ $limit = 5;  // Number of records per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-// Registered Users pagination
-$userQuery = "SELECT id, username, email, role, created_at FROM users LIMIT $limit OFFSET $offset";
-$users = $conn->query($userQuery);
+// Registered Users pagination - Use prepared statements
+$userQuery = "SELECT id, username, email, role, created_at FROM users LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($userQuery);
+$stmt->bind_param("ii", $limit, $offset);
+$stmt->execute();
+$users = $stmt->get_result();
 
-// Get total number of users for pagination
+// Get total number of users for pagination - Use prepared statements
 $totalUsersQuery = "SELECT COUNT(*) AS total FROM users";
 $totalUsersResult = $conn->query($totalUsersQuery);
 $totalUsers = $totalUsersResult->fetch_assoc()['total'];
 $totalPagesUsers = ceil($totalUsers / $limit);
 
-// Recommendation Submissions pagination
+// Recommendation Submissions pagination - Use prepared statements
 $submissionQuery = "SELECT rr.id, u.username, rr.email, rr.status, rs.file_path, rs.submitted_at 
                     FROM recommendation_requests rr
                     LEFT JOIN recommendation_submissions rs ON rr.id = rs.request_id
                     JOIN users u ON rr.user_id = u.id
-                    LIMIT $limit OFFSET $offset";
-$submissions = $conn->query($submissionQuery);
+                    LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($submissionQuery);
+$stmt->bind_param("ii", $limit, $offset);
+$stmt->execute();
+$submissions = $stmt->get_result();
 
-// Get total number of submissions for pagination
+// Get total number of submissions for pagination - Use prepared statements
 $totalSubmissionsQuery = "SELECT COUNT(*) AS total FROM recommendation_requests";
 $totalSubmissionsResult = $conn->query($totalSubmissionsQuery);
 $totalSubmissions = $totalSubmissionsResult->fetch_assoc()['total'];

@@ -7,22 +7,36 @@ if (!isset($_SESSION['user_id'])) {
 
 $conn = new mysqli('localhost', 'root', '', 'user_management');
 $userId = $_SESSION['user_id'];
+$message = "";
 
+// Process resending the email invitation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_email'])) {
-    $email = $conn->real_escape_string($_POST['reference_email']);
-    $token = bin2hex(random_bytes(16));
+    // Sanitize and validate input
+    $email = trim($_POST['reference_email']);
+    
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "Invalid email format.";
+    } elseif (strlen($email) > 100) {
+        $message = "Email must be less than 100 characters.";
+    } else {
+        $email = $conn->real_escape_string($email); // Escaping special characters
+        
+        // Generate a token
+        $token = bin2hex(random_bytes(16));
 
-    // Update token in the database
-    $query = "UPDATE invitations SET token = ?, sent_at = NOW() WHERE user_id = ? AND reference_email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sis", $token, $userId, $email);
-    $stmt->execute();
+        // Update token in the database
+        $query = "UPDATE invitations SET token = ?, sent_at = NOW() WHERE user_id = ? AND reference_email = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("sis", $token, $userId, $email);
+        $stmt->execute();
 
-    // Resend email
-    $link = "http://yourwebsite.com/reference_form.php?token=" . $token;
-    mail($email, "Recommendation Letter Invitation", "Please complete the form: $link");
+        // Resend email with the invitation link
+        $link = "http://localhost/php-login/reference_form.php?token=" . $token;
+        mail($email, "Recommendation Letter Invitation", "Please complete the form: $link");
 
-    $message = "Invitation resent to $email.";
+        $message = "Invitation resent to $email.";
+    }
 }
 
 // Fetch invitations

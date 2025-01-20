@@ -8,13 +8,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 $conn = new mysqli('localhost', 'root', '', 'user_management');
 
 if (isset($_GET['id'])) {
-    $userId = $_GET['id'];
+    $userId = (int)$_GET['id']; // Ensure user ID is an integer to avoid SQL injection
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $role = $_POST['role'];
+        // Validate and sanitize input
+        $username = htmlspecialchars(trim($_POST['username']));
+        $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+        $role = in_array($_POST['role'], ['user', 'admin']) ? $_POST['role'] : 'user'; // Ensure valid role
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "Invalid email format.";
+            exit();
+        }
+
+        // Use prepared statements to prevent SQL injection
         $updateQuery = "UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
         $stmt->bind_param("sssi", $username, $email, $role, $userId);
@@ -27,6 +34,7 @@ if (isset($_GET['id'])) {
         }
     }
 
+    // Fetch user data securely using prepared statements
     $query = "SELECT username, email, role FROM users WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $userId);
