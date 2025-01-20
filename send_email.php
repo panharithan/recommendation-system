@@ -1,24 +1,29 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Dotenv\Dotenv;
 
 require 'vendor/autoload.php'; // Ensure this is the correct path
+
+// Load .env file
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 function sendRecommendationEmail($recipientEmail, $token, $studentName, $studentEmail)
 {
     $mail = new PHPMailer(true);
     try {
-        // Server settings
+        // Server settings - Use environment variables
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';       // Gmail SMTP server
+        $mail->Host = $_ENV['SMTP_HOST']; // Gmail SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'mr.anpanharith@gmail.com'; // Your Gmail address
-        $mail->Password = 'zhlhqnnpmgkugrby';   // Your Gmail app password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->Username = $_ENV['SMTP_USERNAME']; // Your Gmail address
+        $mail->Password = $_ENV['SMTP_PASSWORD'];   // Your Gmail app password
+        $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+        $mail->Port = $_ENV['SMTP_PORT'];
 
         // Recipients
-        $mail->setFrom('theman@example.com', 'Test Only');
+        $mail->setFrom($_ENV['FROM_EMAIL'], $_ENV['FROM_NAME']);
         $mail->addAddress($recipientEmail);
 
         // Content
@@ -33,10 +38,15 @@ function sendRecommendationEmail($recipientEmail, $token, $studentName, $student
             <a href='http://localhost/php-login/recommendation.php?token=$token'>Respond to Request</a><br><br>
             Thank you!";
 
-        $mail->send();
-        return "Invitation sent successfully!";
+        // Send email
+        if ($mail->send()) {
+            return "Invitation sent successfully!";
+        } else {
+            return "Failed to send email. Error: {$mail->ErrorInfo}";
+        }
     } catch (Exception $e) {
-        return "Failed to send email. Error: {$mail->ErrorInfo}";
+        // More detailed error reporting
+        return "Error: {$e->getMessage()}";
     }
 }
 ?>

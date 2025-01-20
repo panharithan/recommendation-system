@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "File upload failed. Please try again.";
                 }
             } else {
-                $message = "Invalid file. Please upload a valid PDF, DOC, or DOCX file under 2 MB.";
+                $message = "Invalid file. Please upload a valid PDF, DOC, or DOCX file under 20 MB.";
             }
         }
     } else {
