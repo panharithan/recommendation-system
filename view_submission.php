@@ -1,16 +1,16 @@
 <?php
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
+if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
+    header("Location: login.php");
     exit();
 }
 
 // Include the database connection
-include 'db_connect.php';
+include "db_connect.php";
 
 // Get the submission ID from the URL
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $submissionId = $_GET['id'];
+if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
+    $submissionId = $_GET["id"];
 
     // Fetch submission details
     $query = "SELECT rr.id, u.username, rr.email, rr.status, rs.relationship, rs.comments, 
@@ -36,7 +36,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 }
 ?>
 
-<?php include 'header.php'; // Include the header ?>
+<?php include "header.php";
+// Include the header
+?>
 
 <div class="container">
     <h2 class="mt-4">Submission Details</h2>
@@ -44,38 +46,46 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     <table class="table table-bordered">
         <tr>
             <th>Submission ID</th>
-            <td><?= htmlspecialchars($submission['id']) ?></td>
+            <td><?= htmlspecialchars($submission["id"]) ?></td>
         </tr>
         <tr>
             <th>Username</th>
-            <td><?= htmlspecialchars($submission['username']) ?></td>
+            <td><?= htmlspecialchars($submission["username"]) ?></td>
         </tr>
         <tr>
             <th>Email</th>
-            <td><?= htmlspecialchars($submission['email']) ?></td>
+            <td><?= htmlspecialchars($submission["email"]) ?></td>
         </tr>
         <tr>
             <th>Status</th>
-            <td><?= htmlspecialchars($submission['status']) ?></td>
+            <td><?= htmlspecialchars($submission["status"]) ?></td>
         </tr>
         <tr>
             <th>Relationship</th>
-            <td><?= htmlspecialchars($submission['relationship'] ?: 'N/A') ?></td>
+            <td><?= htmlspecialchars(
+                $submission["relationship"] ?: "N/A"
+            ) ?></td>
         </tr>
         <tr>
             <th>Comments</th>
-            <td><?= nl2br(htmlspecialchars($submission['comments'] ?: 'N/A')) ?></td>
+            <td><?= nl2br(
+                htmlspecialchars($submission["comments"] ?: "N/A")
+            ) ?></td>
         </tr>
         <tr>
             <th>Submitted At</th>
-            <td><?= htmlspecialchars($submission['submitted_at'] ?: 'N/A') ?></td>
+            <td><?= htmlspecialchars(
+                $submission["submitted_at"] ?: "N/A"
+            ) ?></td>
         </tr>
         <tr>
             <th>File</th>
             <td>
-                <?php if ($submission['file_path']): ?>
+                <?php if ($submission["file_path"]): ?>
                     <!-- Update the link to use the download.php script -->
-                    <a href="download.php?file=<?= urlencode(basename($submission['file_path'])) ?>">Download File</a>
+                    <a href="download.php?file=<?= urlencode(
+                        basename($submission["file_path"])
+                    ) ?>">Download File</a>
                 <?php else: ?>
                     N/A
                 <?php endif; ?>
@@ -84,4 +94,4 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </table>
 </div>
 
-<?php include 'footer.php'; // Include the footer ?>
+<?php include "footer.php"; // Include the footer ?>
