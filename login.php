@@ -2,12 +2,8 @@
 session_start();
 include 'header.php';  // Include the header
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include the database connection
+include 'db_connect.php';
 
 // Process login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

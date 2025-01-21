@@ -1,11 +1,6 @@
 <?php
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'user_management');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include the database connection
+include 'db_connect.php';
 
 // Initialize variables
 $message = "";

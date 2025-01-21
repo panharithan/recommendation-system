@@ -16,7 +16,7 @@ include 'header.php';  // Include the header
 </div>
 
 <footer class="text-center mt-4">
-    <p class="mb-0">Developed by <a href="https://github.com/panharithan" target="_blank" > Panharith An </a>, 2025, in CyberMACS programme</p>
+    <p class="mb-0">Developed by <a href="https://github.com/panharithan" target="_blank" > Panharith An </a>, 2025, in <a href="https://cybermacs.eu/" target="_blank">CyberMACS </a> programme</p>
 </footer>
 
 

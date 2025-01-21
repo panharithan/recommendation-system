@@ -5,7 +5,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
+// Include the database connection
+include 'db_connect.php';
 
 // Get the submission ID from the URL
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

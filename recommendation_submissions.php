@@ -5,7 +5,8 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['ro
     exit();
 }
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
+// Include the database connection
+include 'db_connect.php';
 
 // Pagination settings
 $limit = 5;  // Number of records per page

@@ -5,7 +5,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
+// Include the database connection
+include 'db_connect.php';
+
 $userId = $_SESSION['user_id'];
 
 // Fetch reference submissions

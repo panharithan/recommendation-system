@@ -7,12 +7,8 @@ if (!isset($_SESSION['username'])) {
 
 require 'send_email.php'; // Include the email-sending script
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
-
-// Check for a successful connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include the database connection
+include 'db_connect.php';
 
 // Define the number of records per page
 $records_per_page = 5;
