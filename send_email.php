@@ -35,7 +35,7 @@ function sendRecommendationEmail($recipientEmail, $token, $studentName, $student
             <strong>Student Name:</strong> " . htmlspecialchars($studentName) . "<br>
             <strong>Student Email:</strong> " . htmlspecialchars($studentEmail) . "<br><br>
             Click the link below to respond to their request:<br>
-            <a href='http://localhost/php-login/recommendation.php?token=$token'>Respond to Request</a><br><br>
+            <a href='http://localhost/recommendation-system/recommendation.php?token=$token'>Respond to Request</a><br><br>
             Thank you!";
 
         // Send email
