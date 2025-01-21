@@ -13,19 +13,16 @@ This is a PHP-based Reference Letter Submission System designed to handle user a
 
 ---
 
-## Configure the Database
-
-1. Open the `db_connect.php` file in the project directory.
-2. Update the database credentials to match your XAMPP setup:
-   ```php
-   $conn = new mysqli('localhost', 'root', '', 'user_management');
-
-## Run SQL database script: 
-```script.sql```
-
-## Configure the Mailer Settings:
+## Configure the Database and the Mailer Settings
 Create a file called ".env" and add configuration params below:
 ```
+# Database Connection Configuration
+DB_HOST=[IP address or domai of DB host]
+DB_USERNAME=[db_username]
+DB_PASSWORD=[db_passwod]
+DB_DATABASE=user_management
+
+# SMTP Configuration
 SMTP_HOST=[e.g smtp.gmail.com]
 SMTP_USERNAME=[e.g Gmail]
 SMTP_PASSWORD=[your-app-password]
@@ -51,6 +48,13 @@ FROM_NAME="[Your name]"
     Order Allow,Deny
     Deny from all
 </Files>
+```
+
+
+## Run SQL database script (script.sql):
+Modify password with BCrypt Hash e.g https://bcrypt-generator.com/
+```INSERT INTO users (username, email, password, role)
+VALUES ('admin3', 'admin3@example.com', '$2a$12$dwmiBkApw5QpoPW37ZI3uOA86qyJopjCdAZs5jExY0pYND9nmIND2', 'admin');
 ```
 
 ## Installer Dependencies

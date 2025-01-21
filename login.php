@@ -1,27 +1,23 @@
 <?php
 session_start();
-include 'header.php';  // Include the header
+include "header.php"; // Include the header
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include the database connection
+include "db_connect.php";
 
 // Process login
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $login = trim($_POST['login']);
-    $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $login = trim($_POST["login"]);
+    $password = $_POST["password"];
 
     // Input validation
     if (empty($login) || empty($password)) {
-        header('Location: login.php?error=Please fill in all fields');
+        header("Location: login.php?error=Please fill in all fields");
         exit();
     }
 
     // Sanitize input
-    $login = htmlspecialchars($login, ENT_QUOTES, 'UTF-8');
+    $login = htmlspecialchars($login, ENT_QUOTES, "UTF-8");
 
     // Check for username or email using prepared statements
     $query = "SELECT * FROM users WHERE username = ? OR email = ?";
@@ -33,26 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        if (password_verify($password, $user['password'])) {
+        if (password_verify($password, $user["password"])) {
             // Store session data
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
+            $_SESSION["username"] = $user["username"];
+            $_SESSION["role"] = $user["role"];
 
             // Redirect based on role
-            if ($user['role'] === 'admin') {
-                header('Location: admin_dashboard.php');
+            if ($user["role"] === "admin") {
+                header("Location: admin_dashboard.php");
             } else {
-                header('Location: user_dashboard.php');
+                header("Location: user_dashboard.php");
             }
             exit();
         } else {
             // Redirect with error message
-            header('Location: login.php?error=Invalid password');
+            header("Location: login.php?error=Invalid password");
             exit();
         }
     } else {
         // Redirect with error message
-        header('Location: login.php?error=User not found');
+        header("Location: login.php?error=User not found");
         exit();
     }
 
@@ -65,12 +61,12 @@ $conn->close();
 <div class="login-container">
     <h2>Login</h2>
     
-    <?php
-    // Display error message if it exists
-    if (isset($_GET['error'])) {
-        echo "<div class='alert alert-danger'>" . htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') . "</div>";
-    }
-    ?>
+    <?php // Display error message if it exists
+    if (isset($_GET["error"])) {
+        echo "<div class='alert alert-danger'>" .
+            htmlspecialchars($_GET["error"], ENT_QUOTES, "UTF-8") .
+            "</div>";
+    } ?>
     
     <form action="login.php" method="POST">
         <div class="mb-3">
@@ -94,4 +90,4 @@ $conn->close();
     </div>
 </div>
 
-<?php include 'footer.php'; // Include the footer ?>
+<?php include "footer.php"; // Include the footer ?>

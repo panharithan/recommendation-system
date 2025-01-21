@@ -10,9 +10,9 @@ require 'send_email.php';
 if (isset($_GET['id'])) {
     $submissionId = $_GET['id'];
 
-    // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'user_management');
-
+    // Include the database connection
+    include 'db_connect.php';
+    
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }

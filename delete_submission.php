@@ -12,12 +12,8 @@ if (!isset($_GET['id'])) {
     die("No submission ID specified.");
 }
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include the database connection
+include 'db_connect.php';
 
 // Retrieve the file path for deletion
 $submissionId = $_GET['id'];

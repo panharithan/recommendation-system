@@ -5,7 +5,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$conn = new mysqli('localhost', 'root', '', 'user_management');
+// Include the database connection
+include 'db_connect.php';
 
 if (isset($_GET['id'])) {
     $userId = (int)$_GET['id']; // Ensure user ID is an integer to avoid SQL injection
