@@ -50,13 +50,13 @@ $totalPagesSubmissions = ceil($totalSubmissions / $limit);
 $title = "Admin Dashboard"; // Dynamic title for the page
 include 'header.php'; // Include the header
 ?>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary">Welcome, Admin</h2>
-            <a href="logout.php" class="btn btn-danger btn-sm">Logout</a>
-        </div>
 <!-- Recommendation Submissions Link -->
-<h3 class="text-secondary mt-5 mb-4">Recommendation Submissions</h3>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Admin Panel of Recommendation</h2>
+        <a href="logout.php" class="btn btn-danger btn-sm">Logout</a>
+    </div>
 <a href="recommendation_submissions.php" class="btn btn-primary mb-3">View All Recommendation Submissions</a>
         <!-- Registered Users -->
         <h3 class="text-secondary mb-4">Registered Users</h3>
