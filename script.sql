@@ -11,9 +11,10 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create an admin account
+-- Create an admin account with bcrypt password. 
+-- default password for this below query is 'abc123456'
 INSERT INTO users (username, email, password, role)
-VALUES ('admin', 'admin@example.com', PASSWORD('admin123'), 'admin');
+VALUES ('admin3', 'admin3@example.com', '$2a$12$dwmiBkApw5QpoPW37ZI3uOA86qyJopjCdAZs5jExY0pYND9nmIND2', 'admin');
 
 
 CREATE TABLE recommendation_requests (

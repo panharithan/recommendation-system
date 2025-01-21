@@ -51,8 +51,11 @@ FROM_NAME="[Your name]"
 ```
 
 
-## Run SQL database script: 
-```script.sql```
+## Run SQL database script (script.sql):
+Modify password with BCrypt Hash e.g https://bcrypt-generator.com/
+```INSERT INTO users (username, email, password, role)
+VALUES ('admin3', 'admin3@example.com', '$2a$12$dwmiBkApw5QpoPW37ZI3uOA86qyJopjCdAZs5jExY0pYND9nmIND2', 'admin');
+```
 
 ## Installer Dependencies
 ```
