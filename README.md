@@ -1,6 +1,6 @@
-# User Management System
+# Reference Letter Submission System
 
-This is a PHP-based User Management System designed to handle user authentication, recommendation requests, and admin submissions. Follow the steps below to set up and run the system on a local **XAMPP** server.
+This is a PHP-based Reference Letter Submission System designed to handle user authentication, recommendation requests, and admin submissions. Follow the steps below to set up and run the system on a local **XAMPP** server.
 
 ---
 
@@ -20,8 +20,8 @@ This is a PHP-based User Management System designed to handle user authenticatio
    ```php
    $conn = new mysqli('localhost', 'root', '', 'user_management');
 
-## Run SQL: 
-```Run script.sql```
+## Run SQL database script: 
+```script.sql```
 
 ## Configure the Mailer Settings:
 Create a file called ".env" and add configuration params below:
@@ -35,7 +35,7 @@ FROM_EMAIL=[Your source email]
 FROM_NAME="[Your name]"
 ```
 
-**IMPORTANT** Protect .env file by creating file .htaccess at the same level. 
+**IMPORTANT** Protect .env file and script.sql from public view by creating file .htaccess at the same level. 
 
 **.htaccess**
 ```
@@ -43,7 +43,14 @@ FROM_NAME="[Your name]"
 <Files .env>
     Order Allow,Deny
     Deny from all
-</Files> 
+</Files>
+
+# Deny access to the script file
+
+<Files script.sql>
+    Order Allow,Deny
+    Deny from all
+</Files>
 ```
 
 ## Installer Dependencies
