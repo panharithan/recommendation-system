@@ -82,4 +82,4 @@ This will block direct access to files in the uploads directory.
 ## Running the System
 1.	Start Apache and MySQL services in the XAMPP Control Panel.
 2.	Open your browser and navigate to:
-```http://localhost/recommendation-system/index.html```
+```http://localhost/recommendation-system/index.php```
